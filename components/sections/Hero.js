@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Github,
@@ -12,7 +11,6 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-const ROLES = ["Full Stack Developer", "Frontend Builder", "Problem Solver"];
 
 const SOCIALS = [
   { icon: Github, href: "https://github.com/WasselD", label: "GitHub" },
@@ -20,34 +18,7 @@ const SOCIALS = [
   { icon: Mail, href: "mailto:wasselforbusiness@gmail.com", label: "Email" },
 ];
 
-function useTypewriter(words, typingMs = 65, pauseMs = 1500, deletingMs = 35) {
-  const [wordIndex, setWordIndex] = useState(0);
-  const [text, setText] = useState("");
-  const [deleting, setDeleting] = useState(false);
-
-  useEffect(() => {
-    const current = words[wordIndex % words.length];
-    let timeout;
-
-    if (!deleting && text === current) {
-      timeout = setTimeout(() => setDeleting(true), pauseMs);
-    } else if (deleting && text === "") {
-      setDeleting(false);
-      setWordIndex((i) => i + 1);
-    } else {
-      timeout = setTimeout(() => {
-        const next = deleting
-          ? current.slice(0, text.length - 1)
-          : current.slice(0, text.length + 1);
-        setText(next);
-      }, deleting ? deletingMs : typingMs);
-    }
-
-    return () => clearTimeout(timeout);
-  }, [text, deleting, wordIndex, words, typingMs, pauseMs, deletingMs]);
-
-  return text;
-}
+ 
 
 const container = {
   hidden: {},
@@ -62,14 +33,12 @@ const item = {
 };
 
 export default function Hero() {
-  const typed = useTypewriter(ROLES);
 
   return (
     <section
       id="top"
       className="relative min-h-screen flex items-center overflow-hidden pt-32 pb-20"
     >
-      {/* Animated background */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-base-light dark:bg-base transition-colors duration-300" />
         <div
@@ -93,7 +62,6 @@ export default function Hero() {
           className="absolute top-40 right-[18%] h-80 w-80 rounded-full bg-accent/25 blur-[120px]"
         />
 
-        {/* Floating shapes */}
         <div className="absolute top-[22%] right-[24%] h-3 w-3 rounded-sm border border-primary/40 animate-float" />
         <div className="absolute top-[60%] left-[20%] h-4 w-4 rounded-full border border-accent/40 animate-float-slow" />
         <div className="absolute top-[38%] left-[10%] h-2 w-2 rounded-full bg-primary/50 animate-float-slow" />
@@ -121,42 +89,27 @@ export default function Hero() {
             </div>
           </motion.div>
 
-          <motion.h1
-            variants={item}
-            className="text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05] mb-5"
-          >
-            Hi, I'm <span className="gradient-text">Wassel Dridi</span>
-          </motion.h1>
+        <motion.h1
+          variants={item}
+          className="text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05] mb-5"
+        >
+          Hi, I'm{" "}
+          <span className="relative inline-block gradient-text">
+            Wassel Dridi
+            <span className="absolute bottom-0 left-0 w-full h-[3px] bg-gradient-to-r from-primary to-accent rounded-full" />
+          </span>
+        </motion.h1>
 
-          <motion.div variants={item} className="h-9 mb-5">
-            <span className="text-xl sm:text-2xl text-muted font-display">
-              {typed}
-              <span className="inline-block w-[2px] h-6 bg-primary ml-1 align-middle animate-blink" />
-            </span>
-          </motion.div>
 
           <motion.p
             variants={item}
-            className="text-muted text-base sm:text-lg leading-relaxed max-w-xl mx-auto mb-9"
+            className="text-muted text-base sm:text-lg leading-relaxed max-w-xl mx-auto mb-10"
           >
-            I build fast, reliable web products end to end — from data
-            models to pixel-perfect interfaces — with a security-first
-            mindset and an eye for detail.
+          Full Stack Developer | CompTIA Security+ Certified | AI-Integrated Software Specialist
+           Building secure, scalable web applications with AI-driven efficiency.
           </motion.p>
 
-          <motion.div
-            variants={item}
-            className="flex flex-wrap items-center justify-center gap-3 mb-9"
-          >
-            <a href="/resume.pdf" download className="btn-primary">
-              <Download size={16} />
-              Download resume
-            </a>
-            <a href="#contact" className="btn-secondary">
-              Get in touch
-              <ArrowUpRight size={16} />
-            </a>
-          </motion.div>
+
 
           <motion.div variants={item} className="flex items-center justify-center gap-4">
             {SOCIALS.map(({ icon: Icon, href, label }) => (
@@ -181,7 +134,7 @@ export default function Hero() {
         href="#about"
         animate={{ y: [0, 8, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-8 inset-x-0 flex flex-col items-center gap-1 text-muted"
+        className="absolute bottom-4 inset-x-0 flex flex-col items-center gap-1 text-muted"
         aria-label="Scroll to about section"
       >
         <span className="text-[10px] uppercase tracking-[0.2em]">Scroll</span>

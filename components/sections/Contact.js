@@ -36,16 +36,11 @@ export default function Contact() {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  // Sends the form straight to FormSubmit (https://formsubmit.co) — no backend
-  // or API route needed. Emails land in wasselforbusiness@gmail.com.
-  // NOTE: the very first submission after deploying triggers a one-time
-  // "confirm your email" message from FormSubmit — click the link in that
-  // email once and every submission after that is delivered automatically.
+
   const FORM_SUBMIT_ENDPOINT = "https://formsubmit.co/ajax/wasselforbusiness@gmail.com";
 
   const onSubmit = async ({ _honey, ...data }) => {
-    // Honeypot: real users never fill this hidden field. If it has a value,
-    // silently pretend to succeed instead of sending anything.
+
     if (_honey) {
       reset();
       return;
@@ -151,7 +146,6 @@ export default function Contact() {
           {/* Form */}
           <Reveal delay={0.1} className="glass rounded-lg2 p-8">
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-              {/* Honeypot field — hidden from real visitors, bots tend to fill every input */}
               <input
                 type="text"
                 tabIndex={-1}
