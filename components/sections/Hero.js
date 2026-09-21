@@ -20,11 +20,10 @@ const ROLES = [
   "AI-Integrated Software Specialist",
 ];
 
-// The photo dissolves into the black with straight gradients (no rounded shapes).
+// Straight gradients for smooth edge dissipation into black
 const FADE_X = "linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%)";
 const FADE_Y = "linear-gradient(to bottom, transparent 0%, #000 16%, #000 100%)";
 
-/** A line of display type that rises out of a mask. */
 function Rise({ children, delay = 0, ready }) {
   return (
     <span className="block" style={{ clipPath: "inset(-30% -8% 0% -8%)" }}>
@@ -60,23 +59,38 @@ export default function Hero() {
   const { done } = useIntro();
   const time = useTunisTime();
 
-  // The hero stays pinned; the About section slides over it. Scroll drives the recession.
   const { scrollY } = useScroll();
   const p = useTransform(scrollY, [0, 850], [0, 1]);
   const xLeft = useTransform(p, [0, 1], ["0vw", "-16vw"]);
   const xRight = useTransform(p, [0, 1], ["0vw", "16vw"]);
   const fade = useTransform(p, [0, 0.85], [1, 0]);
   const portraitY = useTransform(p, [0, 1], ["0%", "7%"]);
-  const portraitScale = useTransform(p, [0, 1], [1, 1.1]);
+
+  // Detect screen size to apply styles strictly for small screens (< 640px)
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  useEffect(() => {
+    const checkSize = () => setIsSmallScreen(window.innerWidth < 640);
+    checkSize();
+    window.addEventListener("resize", checkSize);
+    return () => window.removeEventListener("resize", checkSize);
+  }, []);
+
+  // Small screens: moderate scale [1.35 -> 1.5]
+  // Big screens (sm+): exact original scale [1.25 -> 1.4]
+  const portraitScale = useTransform(
+    p,
+    [0, 1],
+    isSmallScreen ? [1.35, 1.5] : [1.25, 1.4]
+  );
 
   return (
     <section
       id="top"
       data-tone="ink"
-      className="sticky top-0 z-0 h-[100svh] min-h-[560px] overflow-hidden"
+      className="sticky top-0 z-0 h-[100svh] min-h-[560px] overflow-hidden bg-black"
     >
-      {/* portrait: centred on the page. x nudges the face (it sits just left of the photo's middle) onto the exact centre. */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex h-[68%] justify-center sm:h-[80%] lg:h-[90%]">
+      {/* Portrait container: h-[76%] on small screens, original h-[68%] / sm:h-[68%] / lg:h-[90%] on big screens */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex h-[76%] justify-center sm:h-[68%] lg:h-[90%]">
         <motion.div
           style={{ x: "3%", y: portraitY, scale: portraitScale, opacity: fade }}
           className="aspect-[1024/915] h-full"
@@ -86,22 +100,31 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={done ? { opacity: 1 } : undefined}
             transition={{ duration: 1.6, ease: "easeOut" }}
-            style={{ WebkitMaskImage: FADE_X, maskImage: FADE_X }}
           >
-            {/* grayscale so the navy backdrop dissolves into the black */}
-            <div className="h-full w-full" style={{ WebkitMaskImage: FADE_Y, maskImage: FADE_Y }}>
+            {/* Combined Mask Layer onto a single element to prevent nested stacking contexts */}
+            <div
+              className="h-full w-full"
+              style={{
+                WebkitMaskImage: `${FADE_X}, ${FADE_Y}`,
+                maskImage: `${FADE_X}, ${FADE_Y}`,
+                WebkitMaskComposite: "source-in",
+                maskComposite: "intersect",
+              }}
+            >
               <img
                 src="/profile.jpg"
                 alt="Portrait of Wassel Dridi"
                 className="h-full w-full object-cover"
-                style={{ filter: "grayscale(1) contrast(1.15) brightness(1.05)" }}
+                style={{
+                  filter: "grayscale(1) contrast(1.25) brightness(1.1)",
+                }}
               />
             </div>
           </motion.div>
         </motion.div>
       </div>
 
-      {/* top-left: who + one line of intent */}
+      {/* Top Left Content */}
       <motion.div
         style={{ opacity: fade }}
         className="absolute left-0 top-[5.25rem] z-10 w-[58%] px-[var(--gutter)] sm:top-[6rem] sm:w-auto sm:max-w-[36rem]"
@@ -116,7 +139,6 @@ export default function Hero() {
             <li key={r}>{r}</li>
           ))}
         </motion.ul>
-        {/* sized by width AND height so it shrinks instead of running into the name; its width stops short of the face in the middle */}
         <motion.p
           className="statement mt-5 max-w-[19ch] text-[clamp(1.35rem,min(2.5vw,4.6vh),2.6rem)] sm:max-w-[max(14rem,min(36ch,calc(50vw_-_19.1svh_-_var(--gutter)_-_24px)))]"
           initial={{ opacity: 0, y: 14 }}
@@ -128,7 +150,7 @@ export default function Hero() {
         </motion.p>
       </motion.div>
 
-      {/* top-right: availability, local time, links. z-20 keeps them above everything else. */}
+      {/* Top Right Content */}
       <motion.div
         style={{ opacity: fade }}
         className="absolute right-0 top-[5.25rem] z-20 px-[var(--gutter)] text-right text-[0.9rem] sm:top-[6rem] md:text-sm"
@@ -160,12 +182,11 @@ export default function Hero() {
         </motion.div>
       </motion.div>
 
-      {/* the name. pointer-events-none: this box spans the whole width and must never sit on top of a link.
-          No z-index on purpose: a z-index would isolate it from the portrait and switch the blend effect off. */}
+      {/* Title display typography with difference blend mode */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 px-[var(--gutter)] pb-[3.2vh]">
         <h1
           aria-label="Wassel Dridi"
-          className="display text-[27vw] leading-[0.8] mix-blend-difference sm:text-[min(19.5vw,40vh)]"
+          className="display text-[27vw] font-bold text-white leading-[0.8] mix-blend-difference sm:text-[min(19.5vw,40vh)]"
         >
           <motion.span className="block" style={{ x: xLeft }} aria-hidden="true">
             <Rise ready={done} delay={0.05}>Wassel</Rise>
