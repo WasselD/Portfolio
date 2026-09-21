@@ -15,6 +15,16 @@ const LINKS = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle("nav-open", open);
@@ -27,14 +37,24 @@ export default function Navbar() {
 
   return (
     <>
-      {/* mix-blend-difference: white on black, black on white, with no per-section logic */}
-      <header className="fixed inset-x-0 top-0 z-50 text-white mix-blend-difference">
-        <div className="flex items-center justify-between px-[var(--gutter)] py-5 sm:py-6">
-          <a href="#top" className="text-[0.95rem] font-semibold tracking-tight" aria-label="Wassel Dridi, back to top">
+      <header
+        className={`fixed inset-x-0 top-0 z-50 text-white transition-colors duration-300 ${
+          scrolled ? "bg-black" : "mix-blend-difference"
+        }`}
+      >
+        <div className="flex items-center justify-between px-[var(--gutter)] py-4 sm:py-5">
+          <a
+            href="#top"
+            className="text-[0.95rem] font-semibold tracking-tight"
+            aria-label="Wassel Dridi, back to top"
+          >
             Wassel Dridi
           </a>
 
-          <nav className="hidden items-center gap-8 text-sm lg:flex" aria-label="Primary">
+          <nav
+            className="hidden items-center gap-8 text-sm lg:flex"
+            aria-label="Primary"
+          >
             {LINKS.map((l) => (
               <a key={l.href} href={l.href}>
                 <RollingText>{l.label}</RollingText>
@@ -71,7 +91,11 @@ export default function Navbar() {
                   onClick={() => setOpen(false)}
                   className="display border-t border-white/15 py-3 text-[clamp(2.4rem,11vw,4rem)]"
                   initial={{ y: 30, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1, transition: { delay: 0.25 + i * 0.05, duration: 0.5 } }}
+                  animate={{
+                    y: 0,
+                    opacity: 1,
+                    transition: { delay: 0.25 + i * 0.05, duration: 0.5 },
+                  }}
                 >
                   {l.label}
                 </motion.a>
