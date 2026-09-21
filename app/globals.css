@@ -1,0 +1,175 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------
+   Tokens. Two tones only: ink (black) and paper (white).
+   Foreground tiers are opacity, never a third colour.
+------------------------------------------------------------------- */
+:root {
+  --font-sans: "Archivo Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, "Times New Roman", serif;
+  --bg: 0 0 0;
+  --fg: 255 255 255;
+  --gutter: clamp(20px, 4vw, 64px);
+}
+
+[data-tone="ink"] {
+  --bg: 0 0 0;
+  --fg: 255 255 255;
+  background-color: rgb(var(--bg));
+  color: rgb(var(--fg));
+}
+[data-tone="paper"] {
+  --bg: 255 255 255;
+  --fg: 0 0 0;
+  background-color: rgb(var(--bg));
+  color: rgb(var(--fg));
+}
+
+@layer base {
+  html {
+    background: #000;
+  }
+  body {
+    position: relative;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    background: #000;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: rgb(var(--fg));
+    color: rgb(var(--bg));
+  }
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: #000; }
+  ::-webkit-scrollbar-thumb { background: #333; }
+  ::-webkit-scrollbar-thumb:hover { background: #666; }
+}
+
+/* Lenis smooth scroll */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+@layer components {
+  /* Display type: condensed, heavy, tight. The width axis is the personality. */
+  .display {
+    font-family: var(--font-sans);
+    font-stretch: 72%;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 0.9;
+  }
+  .statement {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.08;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 1720px;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* Sections meet on straight lines. The next one slides over a pinned hero. */
+  .sheet { position: relative; }
+  .sec-pad, .sheet-pad {
+    padding-top: clamp(72px, 10vw, 150px);
+    padding-bottom: clamp(72px, 10vw, 150px);
+  }
+
+  /* Rolling link text */
+  .roll {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    line-height: 1.25;
+    height: 1.25em;
+  }
+  .roll > span {
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.55s cubic-bezier(.7, 0, .2, 1);
+  }
+  .roll > span > span { display: block; height: 1.25em; }
+  a:hover .roll > span, button:hover .roll > span, .roll:hover > span { transform: translateY(-50%); }
+
+  /* Pill button: fills from below on a curved leading edge (the arc, again). */
+  .pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.95rem 1.7rem;
+    border: 1px solid rgb(var(--fg) / 0.9);
+    overflow: hidden;
+    isolation: isolate;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.45s cubic-bezier(.7, 0, .2, 1);
+  }
+  .pill::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(var(--fg));
+    transform: translateY(102%);
+    transition: transform 0.55s cubic-bezier(.7, 0, .2, 1);
+  }
+  .pill:hover, .pill:focus-visible { color: rgb(var(--bg)); }
+  .pill:hover::before, .pill:focus-visible::before { transform: translateY(0); }
+  .pill-solid { background: rgb(var(--fg)); color: rgb(var(--bg)); }
+  .pill-solid::before { background: rgb(var(--bg)); }
+  .pill-solid:hover, .pill-solid:focus-visible { color: rgb(var(--fg)); }
+  .pill[disabled] { opacity: 0.5; pointer-events: none; }
+
+  /* Underline-only fields, no boxes */
+  .field {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgb(var(--fg) / 0.25);
+    padding: 0.7rem 0;
+    font-size: 1.125rem;
+    color: inherit;
+    transition: border-color 0.3s;
+  }
+  .field::placeholder { color: rgb(var(--fg) / 0.32); }
+  .field:focus { outline: none; border-bottom-color: rgb(var(--fg)); }
+  textarea.field { resize: none; line-height: 1.5; }
+  select.field { appearance: none; cursor: pointer; }
+  select.field option { color: #000; }
+  .field-label { display: block; font-size: 0.8125rem; color: rgb(var(--fg) / 0.55); margin-bottom: 0.15rem; }
+  .field-error { font-size: 0.8125rem; margin-top: 0.4rem; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Skill index: hovering one dims the rest */
+  .skill-list:hover .skill-item { opacity: 0.25; }
+  .skill-list .skill-item:hover { opacity: 1; }
+  .skill-item { transition: opacity 0.35s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
