@@ -2,10 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ------------------------------------------------------------------
-   Tokens. Two tones only: ink (black) and paper (white).
-   Foreground tiers are opacity, never a third colour.
-------------------------------------------------------------------- */
+
 :root {
   --font-sans: "Archivo Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-serif: "Instrument Serif", ui-serif, Georgia, "Times New Roman", serif;
@@ -56,14 +53,14 @@
   ::-webkit-scrollbar-thumb:hover { background: #666; }
 }
 
-/* Lenis smooth scroll */
+
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 .lenis.lenis-stopped { overflow: hidden; }
 
 @layer components {
-  /* Display type: condensed, heavy, tight. The width axis is the personality. */
+  
   .display {
     font-family: var(--font-sans);
     font-stretch: 72%;
@@ -86,14 +83,14 @@ html.lenis, html.lenis body { height: auto; }
     padding-inline: var(--gutter);
   }
 
-  /* Sections meet on straight lines. The next one slides over a pinned hero. */
+  
   .sheet { position: relative; }
   .sec-pad, .sheet-pad {
     padding-top: clamp(72px, 10vw, 150px);
     padding-bottom: clamp(72px, 10vw, 150px);
   }
 
-  /* Rolling link text */
+  
   .roll {
     display: inline-block;
     overflow: hidden;
@@ -109,7 +106,7 @@ html.lenis, html.lenis body { height: auto; }
   .roll > span > span { display: block; height: 1.25em; }
   a:hover .roll > span, button:hover .roll > span, .roll:hover > span { transform: translateY(-50%); }
 
-  /* Pill button: fills from below on a curved leading edge (the arc, again). */
+  
   .pill {
     position: relative;
     display: inline-flex;
@@ -140,7 +137,7 @@ html.lenis, html.lenis body { height: auto; }
   .pill-solid:hover, .pill-solid:focus-visible { color: rgb(var(--fg)); }
   .pill[disabled] { opacity: 0.5; pointer-events: none; }
 
-  /* Underline-only fields, no boxes */
+  
   .field {
     width: 100%;
     background: transparent;
@@ -159,7 +156,7 @@ html.lenis, html.lenis body { height: auto; }
   .field-label { display: block; font-size: 0.8125rem; color: rgb(var(--fg) / 0.55); margin-bottom: 0.15rem; }
   .field-error { font-size: 0.8125rem; margin-top: 0.4rem; text-decoration: underline; text-underline-offset: 3px; }
 
-  /* Skill index: hovering one dims the rest */
+  
   .skill-list:hover .skill-item { opacity: 0.25; }
   .skill-list .skill-item:hover { opacity: 1; }
   .skill-item { transition: opacity 0.35s; }

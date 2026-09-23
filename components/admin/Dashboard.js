@@ -7,7 +7,6 @@ import Icon from "@/components/ui/Icon";
 import ProjectForm from "./ProjectForm";
 import CertForm from "./CertForm";
 import { listItems, saveItem, removeItem, importSeed, mode, signOut } from "@/lib/admin-store";
-import { LOCAL_KEY } from "@/lib/content";
 import { formatMonthYear } from "@/lib/format";
 
 const EASE = [0.7, 0, 0.2, 1];
@@ -16,7 +15,7 @@ const TABS = [
   { kind: "certifications", label: "Certificates", one: "certificate" },
 ];
 
-function IconButton({ label, onClick, disabled, children, danger }) {
+function IconButton({ label, onClick, disabled, children }) {
   return (
     <button
       type="button"
@@ -24,7 +23,7 @@ function IconButton({ label, onClick, disabled, children, danger }) {
       disabled={disabled}
       aria-label={label}
       title={label}
-      className={`grid h-10 w-10 place-items-center border border-fg/25 transition-colors hover:border-fg hover:bg-fg hover:text-bg disabled:pointer-events-none disabled:opacity-25 ${danger ? "" : ""}`}
+      className="grid h-10 w-10 place-items-center border border-fg/25 transition-colors hover:border-fg hover:bg-fg hover:text-bg disabled:pointer-events-none disabled:opacity-25"
     >
       {children}
     </button>
@@ -33,42 +32,69 @@ function IconButton({ label, onClick, disabled, children, danger }) {
 
 function Row({ kind, item, index, count, confirming, onEdit, onMove, onAskDelete, onDelete, onCancelDelete }) {
   const isProject = kind === "projects";
+  const [showDetails, setShowDetails] = useState(false);
+
   return (
-    <li className="grid grid-cols-[auto_1fr_auto] items-center gap-5 border-t border-fg/15 py-5">
-      <div className="grid h-16 w-16 place-items-center overflow-hidden border border-fg/25">
-        {isProject && item.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={item.image} alt="" className="h-full w-full object-cover" />
-        ) : (
-          <span className="display text-xl">{isProject ? item.title.slice(0, 1) : String(item.issueDate || "").slice(0, 4) || "–"}</span>
-        )}
+    <li
+      className="group relative flex flex-col border-t border-fg/15 py-5 transition-colors hover:bg-fg/5"
+      onMouseEnter={() => setShowDetails(true)}
+      onMouseLeave={() => setShowDetails(false)}
+      onClick={() => setShowDetails((p) => !p)}
+    >
+      <div className="grid grid-cols-[1fr_auto] items-center gap-5 cursor-pointer">
+        <div className="min-w-0">
+          <p className="truncate text-lg font-medium">{isProject ? item.title : item.name}</p>
+          <p className="truncate text-sm text-fg/55">
+            {isProject
+              ? [item.category, item.date].filter(Boolean).join(", ")
+              : [item.organization, formatMonthYear(item.issueDate), item.status].filter(Boolean).join(", ")}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+          {confirming ? (
+            <>
+              <span className="mr-1 hidden text-sm sm:inline">Delete?</span>
+              <button type="button" onClick={onDelete} className="pill pill-solid !px-4 !py-2 text-sm">Yes, delete</button>
+              <button type="button" onClick={onCancelDelete} className="px-2 text-sm text-fg/60 hover:text-fg">No</button>
+            </>
+          ) : (
+            <>
+              <IconButton label="Move up" onClick={() => onMove(-1)} disabled={index === 0}><Icon name="chevUp" /></IconButton>
+              <IconButton label="Move down" onClick={() => onMove(1)} disabled={index === count - 1}><Icon name="chevDown" /></IconButton>
+              <IconButton label="Edit" onClick={onEdit}><Icon name="edit" /></IconButton>
+              <IconButton label="Delete" onClick={onAskDelete}><Icon name="trash" /></IconButton>
+            </>
+          )}
+        </div>
       </div>
 
-      <div className="min-w-0">
-        <p className="truncate text-lg font-medium">{isProject ? item.title : item.name}</p>
-        <p className="truncate text-sm text-fg/55">
-          {isProject
-            ? [item.category, item.date].filter(Boolean).join(", ")
-            : [item.organization, formatMonthYear(item.issueDate), item.status].filter(Boolean).join(", ")}
-        </p>
-      </div>
-
-      <div className="flex items-center gap-2">
-        {confirming ? (
-          <>
-            <span className="mr-1 hidden text-sm sm:inline">Delete?</span>
-            <button type="button" onClick={onDelete} className="pill pill-solid !px-4 !py-2 text-sm">Yes, delete</button>
-            <button type="button" onClick={onCancelDelete} className="px-2 text-sm text-fg/60 hover:text-fg">No</button>
-          </>
-        ) : (
-          <>
-            <IconButton label="Move up" onClick={() => onMove(-1)} disabled={index === 0}><Icon name="chevUp" /></IconButton>
-            <IconButton label="Move down" onClick={() => onMove(1)} disabled={index === count - 1}><Icon name="chevDown" /></IconButton>
-            <IconButton label="Edit" onClick={onEdit}><Icon name="edit" /></IconButton>
-            <IconButton label="Delete" onClick={onAskDelete}><Icon name="trash" /></IconButton>
-          </>
+      {/* Affichage des détails au survol ou au clic */}
+      <AnimatePresence>
+        {showDetails && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mt-3 border-t border-fg/10 pt-3 text-sm text-fg/70 space-y-1"
+          >
+            {isProject ? (
+              <>
+                {item.description && <p><strong>Description:</strong> {item.description}</p>}
+                {item.summary && <p><strong>Summary:</strong> {item.summary}</p>}
+                {item.services?.length > 0 && <p><strong>Services:</strong> {item.services.join(", ")}</p>}
+                {item.link && <p><strong>Link:</strong> <a href={item.link} target="_blank" rel="noreferrer" className="underline">{item.link}</a></p>}
+              </>
+            ) : (
+              <>
+                {item.description && <p><strong>Description:</strong> {item.description}</p>}
+                {item.credentialId && <p><strong>Credential ID:</strong> {item.credentialId}</p>}
+                {item.credentialUrl && <p><strong>URL:</strong> <a href={item.credentialUrl} target="_blank" rel="noreferrer" className="underline">{item.credentialUrl}</a></p>}
+              </>
+            )}
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     </li>
   );
 }
@@ -77,7 +103,7 @@ export default function Dashboard({ email }) {
   const [kind, setKind] = useState("projects");
   const [data, setData] = useState({ projects: null, certifications: null });
   const [loadError, setLoadError] = useState("");
-  const [editing, setEditing] = useState(null); // null | { item: object | null }
+  const [editing, setEditing] = useState(null);
   const [confirmId, setConfirmId] = useState(null);
   const [saving, setSaving] = useState(false);
 
@@ -135,7 +161,6 @@ export default function Dashboard({ email }) {
     }
   };
 
-  // Renumber 1..n so moves work even when several items share a sort value.
   const move = async (index, dir) => {
     const next = [...items];
     const j = index + dir;
@@ -161,22 +186,11 @@ export default function Dashboard({ email }) {
     }
   };
 
-  const resetLocal = () => {
-    window.localStorage.removeItem(LOCAL_KEY);
-    load();
-    toast.success("Preview reset to the built-in content.");
-  };
-
   return (
     <div className="mx-auto max-w-5xl px-[var(--gutter)] pb-24">
-      {/* top bar */}
       <header className="flex flex-wrap items-center justify-between gap-4 py-6">
         <div className="flex items-center gap-3">
           <span className="text-[0.95rem] font-semibold">Studio</span>
-          <span className="inline-flex items-center gap-2 border border-fg/25 px-3 py-1 text-[0.8rem] text-fg/70">
-            <span className={`h-1.5 w-1.5 ${mode === "supabase" ? "bg-fg" : "border border-fg"}`} />
-            {mode === "supabase" ? "Connected" : "Local preview"}
-          </span>
         </div>
         <div className="flex items-center gap-5 text-sm">
           {email && <span className="hidden text-fg/50 sm:inline">{email}</span>}
@@ -189,26 +203,14 @@ export default function Dashboard({ email }) {
         </div>
       </header>
 
-      {mode === "local" && (
-        <div className="mb-10 border border-fg/25 px-7 py-5 text-sm text-fg/75">
-          <p>
-            <strong className="font-medium text-fg">Local preview.</strong> Supabase isn&apos;t connected yet, so changes
-            are saved in this browser only and visitors won&apos;t see them. Follow the setup steps in the README to publish.
-          </p>
-          <button onClick={resetLocal} className="mt-2 underline underline-offset-4 hover:text-fg">Reset preview data</button>
-        </div>
-      )}
-
       {loadError && (
         <div className="mb-10 border border-fg px-7 py-5 text-sm" role="alert">
           <strong className="font-medium">Couldn&apos;t load from Supabase.</strong> {loadError}
-          <span className="text-fg/60"> Did you run supabase/setup.sql?</span>
         </div>
       )}
 
       <h1 className="display text-[clamp(3.5rem,11vw,9rem)]">Studio</h1>
 
-      {/* tabs */}
       <div className="mt-10 flex items-end justify-between gap-6 border-b border-fg/15">
         <div className="flex gap-8" role="tablist">
           {TABS.map((t) => (
@@ -232,17 +234,13 @@ export default function Dashboard({ email }) {
         </button>
       </div>
 
-      {/* empty database: offer to import what the site already shows */}
       {mode === "supabase" && !loadError && items && items.length === 0 && (
         <div className="mt-8 border border-fg/25 px-7 py-5 text-sm text-fg/75">
-          <p>
-            Nothing saved yet, so the site is showing its built-in {tab.label.toLowerCase()}. Import them to edit or delete them here.
-          </p>
+          <p>Nothing saved yet.</p>
           <button onClick={doImport} className="pill mt-4 !px-4 !py-2.5 text-sm">Import current {tab.label.toLowerCase()}</button>
         </div>
       )}
 
-      {/* list */}
       {items === null ? (
         <p className="py-16 text-fg/50">Loading...</p>
       ) : (
@@ -265,9 +263,7 @@ export default function Dashboard({ email }) {
           {items.length > 0 && <li className="border-t border-fg/15" aria-hidden="true" />}
         </ul>
       )}
-      <p className="mt-6 text-sm text-fg/40">The first item is shown first on the site. Use the arrows to reorder.</p>
 
-      {/* drawer */}
       <AnimatePresence>
         {editing && (
           <>

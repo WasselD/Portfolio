@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import RollingText from "@/components/ui/RollingText";
 import Icon from "@/components/ui/Icon";
+import { contactValidation, sanitizeInput } from "@/lib/validation";
+import { checkRateLimit, recordSubmission } from "@/lib/rateLimit";
 
 const EMAIL = "wasselforbusiness@gmail.com";
 const FORM_SUBMIT_ENDPOINT = `https://formsubmit.co/ajax/${EMAIL}`;
@@ -21,7 +23,6 @@ function SendButton({ sending }) {
       className="group relative inline-block self-start pb-3 text-[clamp(1.6rem,2.8vw,2.6rem)] font-medium tracking-tight disabled:pointer-events-none disabled:opacity-50"
     >
       {sending ? "Sending..." : <RollingText>Send message</RollingText>}
-      {/* faint resting line, solid line draws across on hover/focus */}
       <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px bg-fg/35" />
       <span
         aria-hidden="true"
@@ -50,26 +51,45 @@ export default function Contact() {
   } = useForm();
 
   const onSubmit = async ({ _honey, ...data }) => {
-    // Bots fill the hidden field; humans never see it.
+    // Vérification Honeypot anti-bot
     if (_honey) {
       reset();
       return;
     }
+
+    // Vérification du Rate Limiting
+    const rateLimit = checkRateLimit();
+    if (!rateLimit.allowed) {
+      toast.error(rateLimit.message);
+      return;
+    }
+
+    // Assainissement / Sanitization des données saisies
+    const cleanData = {
+      name: sanitizeInput(data.name),
+      email: sanitizeInput(data.email),
+      subject: sanitizeInput(data.subject),
+      message: sanitizeInput(data.message),
+    };
+
     try {
       const response = await fetch(FORM_SUBMIT_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          subject: data.subject,
-          message: data.message,
-          _subject: `Portfolio contact — ${data.subject}`,
+          name: cleanData.name,
+          email: cleanData.email,
+          subject: cleanData.subject,
+          message: cleanData.message,
+          _subject: `Portfolio contact — ${cleanData.subject}`,
           _template: "table",
           _captcha: "false",
         }),
       });
+
       if (!response.ok) throw new Error("FormSubmit request failed");
+
+      recordSubmission(); // Enregistre l'horodatage dans localStorage
       toast.success("Message sent. I'll get back to you soon.");
       reset();
     } catch {
@@ -98,7 +118,7 @@ export default function Contact() {
         </a>
 
         <div className="mt-[clamp(48px,7vw,104px)] grid gap-16 border-t border-fg/15 pt-[clamp(40px,6vw,88px)] lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
-          {/* details */}
+          {/* Détails */}
           <div className="flex flex-col gap-10">
             <dl className="space-y-6">
               <div>
@@ -137,8 +157,13 @@ export default function Contact() {
             </dl>
           </div>
 
-          {/* form */}
-          <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-9">
+          {/* Formulaire avec auto-complétion désactivée */}
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+            autoComplete="off"
+            className="flex flex-col gap-9"
+          >
             <input
               type="text"
               tabIndex={-1}
@@ -150,17 +175,20 @@ export default function Contact() {
 
             <div className="grid gap-9 sm:grid-cols-2">
               <Field label="Name" error={errors.name}>
-                <input className="field" placeholder="Your name" {...register("name", { required: "Name is required" })} />
+                <input
+                  className="field"
+                  placeholder="Your name"
+                  autoComplete="off"
+                  {...register("name", contactValidation.name)}
+                />
               </Field>
               <Field label="Email" error={errors.email}>
                 <input
                   type="email"
                   className="field"
                   placeholder="you@example.com"
-                  {...register("email", {
-                    required: "Email is required",
-                    pattern: { value: /^\S+@\S+\.\S+$/, message: "Enter a valid email" },
-                  })}
+                  autoComplete="off"
+                  {...register("email", contactValidation.email)}
                 />
               </Field>
             </div>
@@ -169,7 +197,8 @@ export default function Contact() {
               <input
                 className="field"
                 placeholder="What's this about?"
-                {...register("subject", { required: "Subject is required" })}
+                autoComplete="off"
+                {...register("subject", contactValidation.subject)}
               />
             </Field>
 
@@ -178,10 +207,8 @@ export default function Contact() {
                 rows={4}
                 className="field"
                 placeholder="Tell me a bit about the project..."
-                {...register("message", {
-                  required: "Message is required",
-                  minLength: { value: 10, message: "Message is too short" },
-                })}
+                autoComplete="off"
+                {...register("message", contactValidation.message)}
               />
             </Field>
 

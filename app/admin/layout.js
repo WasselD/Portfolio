@@ -1,6 +1,5 @@
 import { Toaster } from "react-hot-toast";
 
-// Not linked from anywhere on the site, and kept out of search engines.
 export const metadata = {
   title: "Studio",
   robots: { index: false, follow: false, nocache: true },

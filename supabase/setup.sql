@@ -1,13 +1,4 @@
--- =====================================================================
---  Portfolio admin: database setup
---  Run once: Supabase dashboard -> SQL Editor -> New query -> paste -> Run
---
---  Result: anyone can READ projects and certificates (the public site).
---  Only the ONE account below can create, edit or delete them.
---  The rules live in the database, so they hold even if someone finds /admin.
--- =====================================================================
-
--- 1) The only account allowed to write. CHANGE THIS to the email you will log in with.
+-- 1) Admin check function
 create or replace function public.is_admin()
 returns boolean
 language sql
@@ -28,12 +19,12 @@ create table if not exists public.projects (
   demo         text,
   image        text,
   date         text not null default '',
-  frame        boolean not null default true,
   sort_order   integer not null default 0,
   created_at   timestamptz not null default now()
 );
--- (older installs: this adds the column the first time you re-run the file)
-alter table public.projects add column if not exists frame boolean not null default true;
+
+-- Drop the column if it exists in an existing database instance
+alter table public.projects drop column if exists frame;
 
 create table if not exists public.certifications (
   id             text primary key default gen_random_uuid()::text,
