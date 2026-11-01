@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import toast from "react-hot-toast";
 import Icon from "@/components/ui/Icon";
 import { uploadImage, mode } from "@/lib/admin-store";
@@ -16,7 +17,6 @@ export function Field({ label, hint, error, children }) {
   );
 }
 
-/** Comma or Enter adds a tag; Backspace on an empty box removes the last one. */
 export function TagInput({ value, onChange, placeholder }) {
   const [text, setText] = useState("");
   const add = (raw) => {
@@ -57,7 +57,6 @@ export function TagInput({ value, onChange, placeholder }) {
   );
 }
 
-/** Upload (resized in the browser) or paste a URL. Shown in the same pill the site uses. */
 export function ImageField({ value, onChange }) {
   const input = useRef(null);
   const [busy, setBusy] = useState(false);
@@ -80,8 +79,7 @@ export function ImageField({ value, onChange }) {
     <div>
       <div className="relative mb-4 grid aspect-[2.2/1] w-full place-items-center overflow-hidden border border-fg/25">
         {value ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={value} alt="Project preview" className="h-full w-full object-cover" />
+          <Image src={value} alt="Project preview" width={1200} height={600} unoptimized className="h-full w-full object-cover" />
         ) : (
           <span className="text-sm text-fg/40">No image yet</span>
         )}

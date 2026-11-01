@@ -7,20 +7,19 @@ export default function About() {
       <div className="wrap">
         <WordReveal
           className="statement max-w-[24em] text-[clamp(2.1rem,5.4vw,5.8rem)]"
-          text="I'm a full stack developer who cares as much about maintainability as I do about the first impression. I like turning ambiguous problems into small, well-tested pieces."
+          text="I build thoughtful web experiences, shape clear interfaces, and bring practical AI tools into the work."
         />
 
         <div className="mt-[clamp(64px,10vw,150px)] grid gap-14 md:grid-cols-12">
           <div className="max-w-[46ch] space-y-5 text-[1.05rem] text-fg/70 md:col-span-5">
             <p>
-              I got into programming by taking apart old computers, which turned into a CompTIA A+
-              certification and, eventually, a career building web applications. Over the last six
-              years I&apos;ve worked across design, development, and content structure — shaping
-              interfaces that stay clear, fast, and easy to maintain.
+              I&apos;m a full-stack developer and UX/UI designer from Gobaa, Manouba. My experience
+              includes freelance web projects, a developer role at Styly, social media management,
+              and managing day-to-day operations at GOLD GYM.
             </p>
             <p>
-              These days I&apos;m most interested in developer experience, performance, and building
-              simple systems that help the rest of the site stay maintainable.
+              I&apos;ve trained in software development and cybersecurity, and I enjoy combining
+              user-friendly design with practical AI tools and clear communication.
             </p>
           </div>
 

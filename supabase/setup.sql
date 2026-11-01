@@ -1,4 +1,3 @@
--- 1) Admin check function
 create or replace function public.is_admin()
 returns boolean
 language sql
@@ -7,7 +6,6 @@ as $$
   select lower(coalesce(auth.jwt() ->> 'email', '')) = lower('wasselforbusiness@gmail.com');
 $$;
 
--- 2) Tables
 create table if not exists public.projects (
   id           text primary key default gen_random_uuid()::text,
   title        text not null,
@@ -23,7 +21,6 @@ create table if not exists public.projects (
   created_at   timestamptz not null default now()
 );
 
--- Drop the column if it exists in an existing database instance
 alter table public.projects drop column if exists frame;
 
 create table if not exists public.certifications (
@@ -39,7 +36,6 @@ create table if not exists public.certifications (
   created_at     timestamptz not null default now()
 );
 
--- 3) Row-level security: public read, admin-only write
 alter table public.projects       enable row level security;
 alter table public.certifications enable row level security;
 
@@ -60,7 +56,6 @@ create policy "admin write certifications"
   on public.certifications for all to authenticated
   using (public.is_admin()) with check (public.is_admin());
 
--- 4) Image storage: public bucket, admin-only uploads
 insert into storage.buckets (id, name, public)
 values ('portfolio', 'portfolio', true)
 on conflict (id) do nothing;

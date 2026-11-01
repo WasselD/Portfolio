@@ -11,6 +11,11 @@
   --gutter: clamp(20px, 4vw, 64px);
 }
 
+.hero-surface {
+  isolation: isolate;
+  background: #fff;
+  color: #15191e;
+}
 [data-tone="ink"] {
   --bg: 0 0 0;
   --fg: 255 255 255;
@@ -26,6 +31,7 @@
 
 @layer base {
   html {
+    position: relative;
     background: #000;
   }
   body {

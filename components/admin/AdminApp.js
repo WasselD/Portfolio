@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
-import { mode, getSession, onAuthChange, signOut } from "@/lib/admin-store";
+import { getSession, onAuthChange, signOut } from "@/lib/admin-store";
 import { ADMIN_EMAIL } from "@/lib/content";
 
 export default function AdminApp() {
@@ -22,7 +22,7 @@ export default function AdminApp() {
         const unsub = await onAuthChange((s) => alive && setState({ loading: false, session: s }));
         if (alive) off = unsub;
         else if (unsub) unsub();
-      } catch (err) {
+      } catch {
         if (alive) setState({ loading: false, session: null });
       }
     })();
@@ -33,7 +33,6 @@ export default function AdminApp() {
     };
   }, []);
 
-  // 1. Loading screen while checking Supabase auth status
   if (state.loading) {
     return (
       <main className="grid min-h-screen place-items-center text-fg/50">
@@ -42,19 +41,12 @@ export default function AdminApp() {
     );
   }
 
-  // 2. If no session exists, force user to Login page
   if (!state.session) {
     return <Login />;
   }
 
-  // 3. Verify user email against configured ADMIN_EMAIL
   const userEmail = state.session.user?.email || "";
-  const targetAdminEmail = (
-    ADMIN_EMAIL || process.env.NEXT_PUBLIC_ADMIN_EMAIL || ""
-  ).toLowerCase();
-
-  const isAuthorized =
-    !targetAdminEmail || userEmail.toLowerCase() === targetAdminEmail;
+  const isAuthorized = Boolean(ADMIN_EMAIL) && userEmail.toLowerCase() === ADMIN_EMAIL;
 
   if (!isAuthorized) {
     return (
@@ -77,6 +69,5 @@ export default function AdminApp() {
     );
   }
 
-  // 4. User is authenticated and authorized -> Render Studio Dashboard
   return <Dashboard email={userEmail} />;
 }

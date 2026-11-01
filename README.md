@@ -1,42 +1,28 @@
-# Wassel Dridi, portfolio
+# Wassel Dridi — Portfolio
 
-Next.js static export. Black and white, arcs and circles, scroll and sticky motion.
+Personal portfolio of **Wassel Dridi**, a full-stack developer and UX/UI designer based in Manouba, Tunisia. I build clear, responsive digital experiences, from interface design through implementation.
 
-```bash
-npm install
-npm run dev      # http://localhost:3000
-npm run build    # static site in out/
-```
+## What you’ll find
 
-## The admin dashboard (/admin)
+- Selected web projects and the tools behind them
+- Experience, certifications, and professional training
+- Skills across development, interface design, AI tools, and cybersecurity
+- A direct way to get in touch and download my CV
 
-Open `yoursite.com/admin/`. It is not linked anywhere on the site and is marked
-`noindex`. **A hidden URL is not security on its own**, so it is protected two ways:
-a real login, and database rules that only accept writes from your account.
+## Technology
 
-Without Supabase it runs in **local preview**: fully working, but changes stay in
-your browser only. To publish changes to visitors (about 5 minutes, free tier):
+- **Next.js** with the App Router and static export
+- **React** for reusable, interactive interfaces
+- **Tailwind CSS** for responsive styling
+- **Framer Motion** and **Lenis** for motion and smooth scrolling
+- **Supabase** for optional portfolio content management, authentication, database, and image storage
+- **Archivo** and **Instrument Serif** typography
 
-1. Create a project at supabase.com.
-2. **Authentication -> Users -> Add user.** Use your email and a strong password
-   (tick "Auto confirm"). Then **Authentication -> Sign In / Providers -> Email**
-   and turn **off** "Allow new users to sign up".
-3. **SQL Editor:** paste `supabase/setup.sql` and Run. If you log in with a
-   different email than `wasselforbusiness@gmail.com`, change it on the marked line first.
-4. Copy `.env.example` to `.env.local` and fill in the URL and anon key
-   (Project Settings -> API). Add the same variables to your host and redeploy.
-5. Open `/admin/`, sign in, and click **Import current projects / certificates**
-   once so the built-in content becomes editable.
+The public portfolio works as a static site. The optional `/admin/` studio uses Supabase when configured. Its database access is protected with Supabase authentication and row-level security policies in `supabase/setup.sql`.
 
-Add, edit, delete and reorder from there. Uploaded screenshots are resized in the
-browser and stored in Supabase Storage. If a table is ever empty, the site falls
-back to the built-in content in `lib/data/`.
 
-To move the dashboard to a less guessable URL, rename the `app/admin` folder.
+## Contact
 
-## Before you deploy
-
-- `app/layout.js`: `metadataBase` is still the original `https://example.com`. Set your real domain.
-- Certificate dates: the old Education list said the CPPS was issued Dec 29, 2025;
-  the certificate entry said Dec 3, 2025. I kept Dec 3. Fix it in `/admin` if wrong.
-
+- Email: [wasselforbusiness@gmail.com](mailto:wasselforbusiness@gmail.com)
+- LinkedIn: [linkedin.com/in/iamwasseldridi](https://www.linkedin.com/in/iamwasseldridi/)
+- GitHub: [github.com/WasselD](https://github.com/WasselD)

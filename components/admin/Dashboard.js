@@ -69,7 +69,6 @@ function Row({ kind, item, index, count, confirming, onEdit, onMove, onAskDelete
         </div>
       </div>
 
-      {/* Affichage des détails au survol ou au clic */}
       <AnimatePresence>
         {showDetails && (
           <motion.div

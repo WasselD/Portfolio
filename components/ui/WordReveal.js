@@ -14,7 +14,6 @@ function Word({ children, progress, range, still }) {
   );
 }
 
-/** Words light up one by one as the paragraph travels through the viewport. */
 export default function WordReveal({ text, className = "" }) {
   const ref = useRef(null);
   const still = useReducedMotion();

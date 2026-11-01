@@ -9,13 +9,10 @@ const seed = {
   projects: [...PROJECTS].sort(bySort),
   certifications: [...CERTIFICATIONS].sort(bySort),
 };
+const cvCertificationNames = new Set(seed.certifications.map((cert) => cert.name));
 
 const ContentContext = createContext(seed);
 
-/**
- * The static HTML ships with the seed content (fast first paint, good SEO).
- * After hydration we swap in whatever the admin has published.
- */
 export function ContentProvider({ children }) {
   const [content, setContent] = useState(seed);
 
@@ -26,11 +23,12 @@ export function ContentProvider({ children }) {
         if (!alive) return;
         setContent({
           projects: r.projects || seed.projects,
-          certifications: r.certifications || seed.certifications,
+          certifications: r.certifications?.filter((cert) => cvCertificationNames.has(cert.name)).length
+            ? r.certifications.filter((cert) => cvCertificationNames.has(cert.name))
+            : seed.certifications,
         });
       })
       .catch(() => {
-        /* offline or misconfigured: keep the seed content */
       });
     return () => {
       alive = false;

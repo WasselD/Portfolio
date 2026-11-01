@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { SERVICES } from "@/lib/data/services-testimonials";
+import { SERVICES } from "@/lib/data/services";
 
 const EASE = [0.7, 0, 0.2, 1];
 

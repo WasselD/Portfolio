@@ -8,7 +8,6 @@ import Icon from "@/components/ui/Icon";
 function Panel({ project, index, count, progress, still }) {
   const ref = useRef(null);
 
-  // Stacking scroll effect
   const last = index === count - 1;
   const from = count > 1 ? index / (count - 1) : 0;
   const to = count > 1 ? (index + 1) / (count - 1) : 1;
@@ -81,7 +80,6 @@ function Panel({ project, index, count, progress, still }) {
         </div>
       </div>
 
-      {/* Dark overlay veil on scroll */}
       <motion.div
         aria-hidden="true"
         style={{ opacity: still ? 0 : veil }}
@@ -125,7 +123,7 @@ export default function Projects() {
         <div className="grid items-end gap-8 md:grid-cols-12">
           <h2 className="display text-[clamp(3.5rem,10.5vw,11.5rem)] md:col-span-8">Selected work</h2>
           <p className="max-w-[36ch] text-fg/60 md:col-span-4">
-            A mix of client work and side projects — full stack apps, tools, and interfaces.
+            A selection of web applications, interface work, and software tools.
           </p>
         </div>
 

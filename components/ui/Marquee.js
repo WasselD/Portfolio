@@ -16,10 +16,6 @@ const wrap = (min, max, v) => {
   return ((((v - min) % range) + range) % range) + min;
 };
 
-/**
- * Endless ticker. Base speed is constant; scrolling pushes it faster and
- * scrolling backwards reverses it. `direction` sets the resting direction.
- */
 export default function Marquee({ items, speed = 4, direction = 1, className = "", itemClassName = "" }) {
   const baseX = useMotionValue(0);
   const { scrollY } = useScroll();
@@ -28,7 +24,6 @@ export default function Marquee({ items, speed = 4, direction = 1, className = "
   const factor = useTransform(smooth, [0, 1000], [0, 4], { clamp: false });
   const dir = useRef(direction);
 
-  // 4 copies, we loop across exactly one copy's width (25%)
   const x = useTransform(baseX, (v) => `${wrap(-25, 0, v)}%`);
 
   useAnimationFrame((_, delta) => {

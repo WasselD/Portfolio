@@ -5,7 +5,6 @@ import { CERT_STATUSES } from "@/lib/data/certifications";
 import { Field, isUrl } from "./fields";
 
 const toDateInput = (s) => {
-  // accepts "2026-02-22" | "2026-02" | "22-02-2026" and returns yyyy-mm-dd for <input type=date>
   if (!s) return "";
   let m = String(s).match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (m) return s;

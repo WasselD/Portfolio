@@ -20,7 +20,6 @@ export default function SmoothScroll() {
     };
     raf = requestAnimationFrame(loop);
 
-    // In-page anchors glide instead of jump.
     const onClick = (e) => {
       const a = e.target.closest && e.target.closest('a[href^="#"]');
       if (!a) return;

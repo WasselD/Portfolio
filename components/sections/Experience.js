@@ -18,12 +18,11 @@ export default function Experience() {
             Where I&apos;ve worked
           </h2>
           <p className="max-w-[34ch] text-fg/60 md:col-span-4">
-            Six years across agency and product teams, moving toward more ownership each step.
+            Experience across web development, interface design, social media, and business operations.
           </p>
         </div>
 
         <div ref={ref} className="relative mt-[clamp(48px,7vw,110px)]">
-          {/* a line that draws itself as you read down the page */}
           <div className="absolute bottom-0 left-0 top-0 w-px bg-fg/15" aria-hidden="true">
             <motion.div
               className="h-full w-px origin-top bg-fg"

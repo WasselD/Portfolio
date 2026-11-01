@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useState } from "react";
 
-// Tells the hero when the preloader curtain has lifted, so its entrance plays on cue.
 const IntroContext = createContext({ done: true, setDone: () => {} });
 
 export function IntroProvider({ children }) {

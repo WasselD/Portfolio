@@ -18,7 +18,7 @@ export default function Skills() {
           Tools I reach for
         </h2>
         <p className="max-w-[34ch] text-fg/60 md:col-span-4">
-          A working set of technologies across the stack, kept current through ongoing projects.
+          Development, design, IT, cybersecurity, and business skills reflected in my experience and training.
         </p>
       </div>
 
