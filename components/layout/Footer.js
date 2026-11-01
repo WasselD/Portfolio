@@ -17,7 +17,7 @@ const LINKS = [
 
 const SOCIALS = [
   { label: "GitHub", href: "https://github.com/WasselD" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/iamwasseldridi/" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/wasseldridi/" },
   { label: "Email", href: "mailto:wasselforbusiness@gmail.com" },
 ];
 

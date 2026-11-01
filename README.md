@@ -24,5 +24,5 @@ The public portfolio works as a static site. The optional `/admin/` studio uses 
 ## Contact
 
 - Email: [wasselforbusiness@gmail.com](mailto:wasselforbusiness@gmail.com)
-- LinkedIn: [linkedin.com/in/iamwasseldridi](https://www.linkedin.com/in/iamwasseldridi/)
+- LinkedIn: [linkedin.com/in/wasseldridi](https://www.linkedin.com/in/wasseldridi/)
 - GitHub: [github.com/WasselD](https://github.com/WasselD)

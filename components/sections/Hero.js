@@ -7,7 +7,7 @@ import Icon from "@/components/ui/Icon";
 
 const SOCIALS = [
   { label: "GitHub", href: "https://github.com/WasselD" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/iamwasseldridi/" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/wasseldridi/" },
 ];
 
 const FADE_X = "linear-gradient(to right, transparent 0%, #fff 22%, #fff 78%, transparent 100%)";

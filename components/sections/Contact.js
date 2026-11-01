@@ -12,7 +12,7 @@ const FORM_SUBMIT_ENDPOINT = `https://formsubmit.co/ajax/${EMAIL}`;
 
 const SOCIALS = [
   { label: "GitHub", href: "https://github.com/WasselD" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/iamwasseldridi/" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/wasseldridi/" },
 ];
 
 function SendButton({ sending }) {
